@@ -379,17 +379,29 @@ def get_bookings():
     return response
 @app.route("/api/debug")
 def debug():
+    new_key = "3e766b5c-4775-49e0-8aeb-91320bf57841"
+    new_auth = f"Basic {base64.b64encode(new_key.encode()).decode()}"
     results = {}
     try:
         r = requests.get(
-            "https://app.uplisting.io/ical/77b278",
-            headers={"Accept-Encoding": "identity"},
+            f"{BASE_URL}/properties",
+            headers={"Authorization": new_auth, "Accept-Encoding": "identity"},
             timeout=10
         )
-        results["ical"] = {"status": r.status_code, "text": r.text[:1000]}
+        results["properties"] = {"status": r.status_code, "text": r.text[:300]}
     except Exception as e:
-        results["ical"] = {"error": str(e)}
+        results["properties"] = {"error": str(e)}
+    try:
+        r2 = requests.get(
+            f"{BASE_URL}/bookings",
+            headers={"Authorization": new_auth, "Accept-Encoding": "identity"},
+            timeout=10
+        )
+        results["bookings"] = {"status": r2.status_code, "text": r2.text[:300]}
+    except Exception as e:
+        results["bookings"] = {"error": str(e)}
     return jsonify(results)
+
 
 
 
