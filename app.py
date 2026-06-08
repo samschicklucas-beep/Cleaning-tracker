@@ -382,25 +382,25 @@ def debug():
     new_key = "3e766b5c-4775-49e0-8aeb-91320bf57841"
     new_auth = f"Basic {base64.b64encode(new_key.encode()).decode()}"
     results = {}
-    try:
-        r = requests.get(
-            f"{BASE_URL}/properties",
-            headers={"Authorization": new_auth, "Accept-Encoding": "identity"},
-            timeout=10
-        )
-        results["properties"] = {"status": r.status_code, "text": r.text[:300]}
-    except Exception as e:
-        results["properties"] = {"error": str(e)}
-    try:
-        r2 = requests.get(
-            f"{BASE_URL}/bookings",
-            headers={"Authorization": new_auth, "Accept-Encoding": "identity"},
-            timeout=10
-        )
-        results["bookings"] = {"status": r2.status_code, "text": r2.text[:300]}
-    except Exception as e:
-        results["bookings"] = {"error": str(e)}
+    paths = [
+        "/bookings?property_id=253449",
+        "/bookings?filter%5Bproperty_id%5D=253449",
+        "/properties/253449/bookings",
+        "/v1/properties/253449/bookings",
+        "/multi_units/253449/bookings",
+    ]
+    for path in paths:
+        try:
+            r = requests.get(
+                f"{BASE_URL}{path}",
+                headers={"Authorization": new_auth, "Accept-Encoding": "identity"},
+                timeout=10
+            )
+            results[path] = {"status": r.status_code, "text": r.text[:200]}
+        except Exception as e:
+            results[path] = {"error": str(e)}
     return jsonify(results)
+
 
 
 
