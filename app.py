@@ -382,33 +382,15 @@ def debug():
     results = {}
     try:
         r = requests.get(
-            f"{BASE_URL}/v2/bookings",
-            headers={
-                "Authorization": AUTH,
-                "Accept-Encoding": "identity",
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            params={"property_id": "256675"},
+            "https://app.uplisting.io/ical/77b278",
+            headers={"Accept-Encoding": "identity"},
             timeout=10
         )
-        results["v2_get"] = {"status": r.status_code, "text": r.text[:500]}
+        results["ical"] = {"status": r.status_code, "text": r.text[:1000]}
     except Exception as e:
-        results["v2_get"] = {"error": str(e)}
-    try:
-        r2 = requests.get(
-            f"{BASE_URL}/v2/properties/256675/bookings",
-            headers={
-                "Authorization": AUTH,
-                "Accept-Encoding": "identity",
-                "Accept": "application/json"
-            },
-            timeout=10
-        )
-        results["v2_nested"] = {"status": r2.status_code, "text": r2.text[:500]}
-    except Exception as e:
-        results["v2_nested"] = {"error": str(e)}
+        results["ical"] = {"error": str(e)}
     return jsonify(results)
+
 
 
 
