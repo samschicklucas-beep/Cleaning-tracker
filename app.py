@@ -377,6 +377,18 @@ def get_bookings():
     response = jsonify(r.json())
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+@app.route("/api/debug")
+def debug():
+    try:
+        b_res = requests.get(
+            f"{BASE_URL}/bookings",
+            params={"filter[property_id]": "256675"},
+            headers={"Authorization": AUTH},
+            timeout=10
+        )
+        return jsonify({"status": b_res.status_code, "data": b_res.json()})
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
