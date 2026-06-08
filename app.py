@@ -380,16 +380,25 @@ def get_bookings():
 @app.route("/api/debug")
 def debug():
     results = {}
-    try:
-        r = requests.get(
-            f"{BASE_URL}/properties/256675/bookings",
-            headers={"Authorization": AUTH, "Accept-Encoding": "identity"},
-            timeout=10
-        )
-        results["nested_path"] = {"status": r.status_code, "text": r.text[:2000]}
-    except Exception as e:
-        results["nested_path"] = {"error": str(e)}
+    paths = [
+        "/bookings?filter[property_id]=256675",
+        "/v1/bookings?property_id=256675",
+        "/v2/bookings?property_id=256675",
+        "/properties/256675/reservations",
+        "/bookings?propertyId=256675",
+    ]
+    for path in paths:
+        try:
+            r = requests.get(
+                f"{BASE_URL}{path}",
+                headers={"Authorization": AUTH, "Accept-Encoding": "identity"},
+                timeout=10
+            )
+            results[path] = {"status": r.status_code, "text": r.text[:300]}
+        except Exception as e:
+            results[path] = {"error": str(e)}
     return jsonify(results)
+
 
 
 
