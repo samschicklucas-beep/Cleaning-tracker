@@ -381,26 +381,16 @@ def get_bookings():
 def debug():
     results = {}
     try:
-        # Try no filters - just get all bookings
         r = requests.get(
-            f"{BASE_URL}/bookings",
-            headers={"Authorization": AUTH},
-            timeout=10
-        )
-        results["no_filter"] = {"status": r.status_code, "text": r.text[:1000]}
-    except Exception as e:
-        results["no_filter"] = {"error": str(e)}
-    try:
-        # Try properties/256675/bookings path
-        r2 = requests.get(
             f"{BASE_URL}/properties/256675/bookings",
-            headers={"Authorization": AUTH},
+            headers={"Authorization": AUTH, "Accept-Encoding": "identity"},
             timeout=10
         )
-        results["nested_path"] = {"status": r2.status_code, "text": r2.text[:1000]}
+        results["nested_path"] = {"status": r.status_code, "text": r.text[:2000]}
     except Exception as e:
         results["nested_path"] = {"error": str(e)}
     return jsonify(results)
+
 
 
 
